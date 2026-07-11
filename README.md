@@ -17,11 +17,7 @@ an entailment-checking task, not open-ended generation.
 pip install -r requirements.txt
 ```
 
-Set your LLM credentials by copying `.env.example` to `.env` and filling in your key:
-
-```bash
-cp .env.example .env
-```
+Set your LLM credentials by copying 
 
 Recommended for testing — **Gemini (free, no credit card)**:
 ```dotenv
