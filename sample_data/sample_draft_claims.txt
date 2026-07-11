@@ -1,0 +1,6 @@
+1. A hydration tracking device comprising:
+a container defining an interior volume for holding a liquid beverage;
+an internal weight-based sensor configured to measure the volume of liquid consumed during a drinking event;
+a microcontroller configured to log each drinking event with an associated timestamp;
+a wireless Bluetooth Low Energy transceiver configured to continuously stream hydration data to a companion mobile application;
+a mobile application configured to display a cumulative daily hydration total and to transmit a reminder notification upon detecting an interval without a logged drinking event.
