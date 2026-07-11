@@ -4,30 +4,35 @@ Verifies AI-generated patent claims against inventor disclosures. Grounds
 every claim element in retrieved evidence, flags unsupported ("hallucinated")
 claim elements, and surfaces invention concepts the draft left out.
 
+
 ## Architecture
+
+```
 disclosure + draft claims
-|
-v
-[1] Claim Extraction Agent      -- LLM: breaks claims into atomic elements
-|
-+----------------------------+
-v                            v
-[2] Evidence Retrieval Agent    [4] Coverage Analysis Agent
-(BM25 + vector, local,          (LLM: what's in the disclosure
-no LLM call)                    but missing from the claims?)
-|                            |
-v                            |
-[3] Verification Agent (LLM)        |
-SUPPORTED / UNSUPPORTED         |
-per element                     |
-|                            |
-+------------+---------------+
-v
-[5] Quality Scoring Agent
-(pure aggregation, no LLM)
-|
-v
-Quality Report (JSON)
+        |
+        v
+ [1] Claim Extraction Agent      -- LLM: breaks claims into atomic elements
+        |
+        +----------------------------+
+        v                            v
+ [2] Evidence Retrieval Agent    [4] Coverage Analysis Agent
+     (BM25 + vector, local,          (LLM: what's in the disclosure
+      no LLM call)                    but missing from the claims?)
+        |                            |
+        v                            |
+ [3] Verification Agent (LLM)        |
+     SUPPORTED / UNSUPPORTED         |
+     per element                     |
+        |                            |
+        +------------+---------------+
+                     v
+          [5] Quality Scoring Agent
+              (pure aggregation, no LLM)
+                     |
+                     v
+            Quality Report (JSON)
+```
+
 
 Orchestrated with LangGraph (`app/graph.py`). Steps [2]→[3] and [4] run as
 parallel branches off claim extraction and join at scoring.
