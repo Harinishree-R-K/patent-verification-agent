@@ -142,6 +142,4 @@ Built to be honest about what's fully real vs. a deliberate simplification:
   semantic/paragraph-aware chunking, which would matter more on long,
   multi-page real disclosures.
 
-git commit -m "Update README: Gemini as recommended default"
-git push
-And — checking you actually did it — did you rotate that Gemini API key you pasted earlier?
+
