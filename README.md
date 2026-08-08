@@ -4,7 +4,6 @@ Verifies AI-generated patent claims against inventor disclosures. Grounds
 every claim element in retrieved evidence, flags unsupported ("hallucinated")
 claim elements, and surfaces invention concepts the draft left out.
 
-
 ## Architecture
 
 ```
@@ -33,7 +32,6 @@ disclosure + draft claims
             Quality Report (JSON)
 ```
 
-
 Orchestrated with LangGraph (`app/graph.py`). Steps [2]→[3] and [4] run as
 parallel branches off claim extraction and join at scoring.
 
@@ -53,40 +51,17 @@ an entailment-checking task, not open-ended generation.
 pip install -r requirements.txt
 ```
 
-Set your LLM credentials by copying and filling in your key:
+Set your LLM credentials as environment variables:
 
-Recommended for testing — **Gemini (free, no credit card)**:
-```dotenv
-LLM_PROVIDER=gemini
-LLM_MODEL=gemini-flash-latest
-GEMINI_API_KEY=your-real-key-here
-```
-Get a free key at https://aistudio.google.com/apikey. Note: on the free tier,
-Google may use your inputs/outputs to improve their models — fine for testing
-with sample data, but don't run real confidential disclosures through it.
-Use `gemini-flash-latest` rather than a pinned version number (e.g.
-`gemini-2.5-flash`) — Google retires specific Flash versions periodically,
-and the `-latest` alias always points at their current recommended model.
-
-To use Anthropic instead (paid, cheap, higher quality):
-```dotenv
-LLM_PROVIDER=anthropic
-LLM_MODEL=claude-sonnet-4-6
-ANTHROPIC_API_KEY=sk-ant-your-real-key-here
+```bash
+# Default provider is Anthropic
+export ANTHROPIC_API_KEY="sk-ant-..."
+export LLM_PROVIDER="anthropic"          # or "openai" / "gemini"
+export LLM_MODEL="claude-sonnet-4-6"     # or "gpt-4o", "gemini-1.5-pro", etc.
 ```
 
-To use OpenAI instead:
-```dotenv
-LLM_PROVIDER=openai
-LLM_MODEL=gpt-4o
-OPENAI_API_KEY=sk-your-real-key-here
-```
-(uncomment `openai` in `requirements.txt` and `pip install -r requirements.txt` again)
-
-**Never commit your real `.env` file or paste your API key anywhere outside
-it** — it's already excluded via `.gitignore`. Treat API keys like passwords:
-if one is ever exposed (pasted in a chat, committed to git, etc.), rotate it
-immediately at the provider's dashboard.
+To use OpenAI instead: `export LLM_PROVIDER=openai`, `export OPENAI_API_KEY=...`,
+and uncomment `openai` in `requirements.txt`. Same pattern for Gemini.
 
 ## Run the Streamlit demo
 
@@ -142,4 +117,24 @@ Built to be honest about what's fully real vs. a deliberate simplification:
   semantic/paragraph-aware chunking, which would matter more on long,
   multi-page real disclosures.
 
+## Project layout
 
+```
+app/
+  schemas.py              # Pydantic models / LangGraph state
+  llm_client.py            # swappable Anthropic/OpenAI/Gemini wrapper
+  graph.py                 # LangGraph orchestration
+  main.py                  # FastAPI app
+  agents/
+    claim_extraction.py     # Agent 1
+    evidence_retrieval.py   # Agent 2
+    verification.py         # Agent 3
+    coverage_analysis.py    # Agent 4
+    quality_scoring.py       # Agent 5
+  retrieval/
+    hybrid_search.py         # BM25 + vector hybrid retriever
+streamlit_app.py            # frontend
+sample_data/                # example disclosure + draft claims
+tests/
+  test_pipeline_dry_run.py  # mocked end-to-end test
+```
