@@ -61,7 +61,7 @@ export LLM_MODEL="claude-sonnet-4-6"     # or "gpt-4o", "gemini-1.5-pro", etc.
 ```
 
 To use OpenAI instead: `export LLM_PROVIDER=openai`, `export OPENAI_API_KEY=...`,
-and uncomment `openai` in `requirements.txt`. Same pattern for Gemini.
+and uncomment `openai` in `requirements.txt`. Same pattern for Gemini and Groq.
 
 ## Run the Streamlit demo
 
